@@ -209,8 +209,22 @@ public class VeeplayCordovaPlugin extends CordovaPlugin implements DialogInterfa
             mainCallbackContext.success("true");
             return true;
         } else if(action.equals("back")) {
-            APSMediaPlayer.getInstance().back();
-            mainCallbackContext.success("true");
+            cordova.getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    APSMediaPlayer.getInstance().finish();
+                    if(fullscreenPlayerDialog!=null && fullscreenPlayerDialog.isShowing()) {
+                        fullscreenPlayerDialog.dismiss();
+                    }
+                    View container = cordovaParent.findViewWithTag("VeeplayContainer");
+                    if(container != null) {
+                        Log.d("VeeplayPlayer", "view found - removing container");
+                        cordovaParent.removeView(container);
+                    } else {
+                        Log.d("VeeplayPlayer", "view not found - container not removed");
+                    }
+                }
+            });
             return true;
         } else if(action.equals("mute")) {
             APSMediaPlayer.getInstance().setMute(true);
@@ -397,7 +411,7 @@ public class VeeplayCordovaPlugin extends CordovaPlugin implements DialogInterfa
             if(internalBridgeContext != null) {
                 PluginResult pluginResult = new PluginResult(PluginResult.Status.OK, "stopBoundingTimer");
                 pluginResult.setKeepCallback(true);
-                mainCallbackContext.sendPluginResult(pluginResult);
+                internalBridgeContext.sendPluginResult(pluginResult);
 
             }
         }
