@@ -425,7 +425,7 @@ public class VeeplayCordovaPlugin extends CordovaPlugin implements DialogInterfa
             if(eventsTrackingContext == null && savedEventsTrackingContext != null) {
                 eventsTrackingContext = savedEventsTrackingContext;
             }
-            initCastSupport();
+            //initCastSupport();
         }
         //obtain a reference to the main player view
         ViewGroup veeplayViews = APSMediaPlayer.getInstance().viewController();
