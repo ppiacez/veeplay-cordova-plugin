@@ -148,9 +148,22 @@ public class VeeplayCordovaPlugin extends CordovaPlugin implements DialogInterfa
             });
             return true;
         } else if (action.equals("pause")) {
-            if(APSMediaPlayer.getInstance().isPlaying()) {
-                APSMediaPlayer.getInstance().pause();
-            }
+             cordova.getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    APSMediaPlayer.getInstance().finish();
+                    if(fullscreenPlayerDialog!=null && fullscreenPlayerDialog.isShowing()) {
+                        fullscreenPlayerDialog.dismiss();
+                    }
+                    View container = cordovaParent.findViewWithTag("VeeplayContainer");
+                    if(container != null) {
+                        Log.d("VeeplayPlayer", "view found - removing container");
+                        cordovaParent.removeView(container);
+                    } else {
+                        Log.d("VeeplayPlayer", "view not found - container not removed");
+                    }
+                }
+            });
             return true;
         } else if (action.equals("resume")) {
             if(APSMediaPlayer.getInstance().isPaused()) {
